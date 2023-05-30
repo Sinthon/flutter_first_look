@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_first_look/constant.dart';
 import 'package:flutter_first_look/screens/home/home.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -20,21 +21,26 @@ class _LoginState extends State<Login> {
   TextEditingController txtEmail = TextEditingController();
   TextEditingController txtPassword = TextEditingController();
 
+  // ignore: unused_element
   void _loginUser() async {
     ApiResponse response = await login(txtEmail.text, txtPassword.text);
     if (response.error == null) {
+      var user = {'': response.data};
+      _saveAndRedirectToHome(user as User);
     } else {
       setState(() {
         loading = false;
       });
+      // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context)
           .showSnackBar(SnackBar(content: Text('${response.error}')));
     }
   }
 
+  // ignore: unused_element
   void _saveAndRedirectToHome(User user) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setString('token', user.token ?? '');
+    await pref.setString('token', user.authorisation?.token ?? '');
     await pref.setInt('userId', user.id ?? 0);
     // ignore: use_build_context_synchronously
     Navigator.of(context).pushAndRemoveUntil(
@@ -48,6 +54,44 @@ class _LoginState extends State<Login> {
       appBar: AppBar(
         title: const Text('Login'),
         // centerTitle: true,
+      ),
+      body: Form(
+        key: formkey,
+        child: ListView(
+          padding: const EdgeInsets.all(32),
+          children: [
+            TextFormField(
+                keyboardType: TextInputType.emailAddress,
+                controller: txtEmail,
+                validator: (val) =>
+                    val!.isEmpty ? 'Invalid email address' : null,
+                decoration: kInputDecoration('Email')),
+            const SizedBox(
+              height: 10,
+            ),
+            TextFormField(
+                controller: txtPassword,
+                obscureText: true,
+                validator: (val) =>
+                    val!.length < 6 ? 'Required at least 6 chars' : null,
+                decoration: kInputDecoration('Password')),
+            const SizedBox(
+              height: 10,
+            ),
+            loading
+                ? const Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : kTextButton('Login', () {
+                    if (formkey.currentState!.validate()) {
+                      setState(() {
+                        loading = true;
+                        _loginUser();
+                      });
+                    }
+                  }),
+          ],
+        ),
       ),
     );
   }

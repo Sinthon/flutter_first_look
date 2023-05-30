@@ -1,19 +1,19 @@
+import 'authorisation.dart';
+
 class User {
   int? id;
   String? name;
-  String? image;
   String? email;
-  String? token;
+  Authorisation? authorisation;
 
-  User({this.id, this.name, this.image, this.email, this.token});
+  User({this.id, this.name, this.email, this.authorisation});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
       id: json['user']['id'],
       name: json['user']['name'],
-      image: json['user']['image'],
       email: json['user']['email'],
-      token: json['user']['token'],
+      authorisation: json['user']['authorisation'],
     );
   }
 }

@@ -1,7 +1,7 @@
 // ----- STRINGS ------
 import 'package:flutter/material.dart';
 
-const baseUrl = 'localhost:8000/';
+const baseUrl = 'http://127.0.0.1:8000';
 
 // ----- Errors -----
 const serverError = 'Server error';
