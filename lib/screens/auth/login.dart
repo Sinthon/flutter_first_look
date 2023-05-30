@@ -25,8 +25,7 @@ class _LoginState extends State<Login> {
   void _loginUser() async {
     ApiResponse response = await login(txtEmail.text, txtPassword.text);
     if (response.error == null) {
-      var user = {'': response.data};
-      _saveAndRedirectToHome(user as User);
+      _saveAndRedirectToHome(response.data as User);
     } else {
       setState(() {
         loading = false;
