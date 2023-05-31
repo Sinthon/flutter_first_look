@@ -39,7 +39,7 @@ class _LoginState extends State<Login> {
   // ignore: unused_element
   void _saveAndRedirectToHome(User user) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    await pref.setString('token', user.authorisation?.token ?? '');
+    await pref.setString('token', user.token ?? '');
     await pref.setInt('userId', user.id ?? 0);
     // ignore: use_build_context_synchronously
     Navigator.of(context).pushAndRemoveUntil(
@@ -56,40 +56,42 @@ class _LoginState extends State<Login> {
       ),
       body: Form(
         key: formkey,
-        child: ListView(
-          padding: const EdgeInsets.all(32),
-          children: [
-            TextFormField(
-                keyboardType: TextInputType.emailAddress,
-                controller: txtEmail,
-                validator: (val) =>
-                    val!.isEmpty ? 'Invalid email address' : null,
-                decoration: kInputDecoration('Email')),
-            const SizedBox(
-              height: 10,
-            ),
-            TextFormField(
-                controller: txtPassword,
-                obscureText: true,
-                validator: (val) =>
-                    val!.length < 6 ? 'Required at least 6 chars' : null,
-                decoration: kInputDecoration('Password')),
-            const SizedBox(
-              height: 10,
-            ),
-            loading
-                ? const Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : kTextButton('Login', () {
-                    if (formkey.currentState!.validate()) {
-                      setState(() {
-                        loading = true;
-                        _loginUser();
-                      });
-                    }
-                  }),
-          ],
+        child: Center(
+          child: ListView(
+            padding: const EdgeInsets.all(32),
+            children: [
+              TextFormField(
+                  keyboardType: TextInputType.emailAddress,
+                  controller: txtEmail,
+                  validator: (val) =>
+                      val!.isEmpty ? 'Invalid email address' : null,
+                  decoration: kInputDecoration('Email')),
+              const SizedBox(
+                height: 10,
+              ),
+              TextFormField(
+                  controller: txtPassword,
+                  obscureText: true,
+                  validator: (val) =>
+                      val!.length < 6 ? 'Required at least 6 chars' : null,
+                  decoration: kInputDecoration('Password')),
+              const SizedBox(
+                height: 10,
+              ),
+              loading
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : kTextButton('Login', () {
+                      if (formkey.currentState!.validate()) {
+                        setState(() {
+                          loading = true;
+                          _loginUser();
+                        });
+                      }
+                    }),
+            ],
+          ),
         ),
       ),
     );
